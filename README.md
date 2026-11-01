@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # Inventory Loss Detection System
 
 A Flask and MySQL web application for recording inventory activity,
@@ -705,3 +706,6 @@ When a physical stock count is saved, the application now runs shrinkage detecti
 A count with no shortage (physical quantity equal to or greater than system quantity) does not create a shrinkage alert and is marked `APPROVED`. This uses the statuses defined by the supplied `CycleCount` schema (`PENDING`, `REVIEW_REQUIRED`, `APPROVED`, `REJECTED`).
 
 Example: system quantity 106 and physical quantity 80 gives a shortage of 26 units, so a shrinkage alert is created. System quantity 106 and physical quantity 106 creates no shortage alert.
+=======
+# project
+>>>>>>> 70b57f5b21d09e2569e780c2232aaf2054685c64
