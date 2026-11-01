@@ -1,0 +1,99 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<h2>Inventory Movements</h2>
+
+<form method="POST">
+
+    <label>Store</label>
+    <select name="store_id" required>
+        {% for store in stores %}
+        <option value="{{ store.store_id }}">
+            {{ store.store_name }}
+        </option>
+        {% endfor %}
+    </select>
+
+    <label>Product</label>
+    <select name="sku_id" required>
+        {% for product in products %}
+        <option value="{{ product.sku_id }}">
+            {{ product.product_name }}
+        </option>
+        {% endfor %}
+    </select>
+
+    <label>Movement Type</label>
+    <select name="movement_type" id="movement_type" required>
+        <option value="RECEIPT">Receipt</option>
+        <option value="SALE">Sale</option>
+        <option value="TRANSFER_IN">Transfer In</option>
+        <option value="TRANSFER_OUT">Transfer Out</option>
+        <option value="ADJUSTMENT">Adjustment</option>
+        <option value="DAMAGE">Damage</option>
+        <option value="RETURN">Return</option>
+    </select>
+
+    <div id="adjustment_field">
+        <label>Adjustment Direction</label>
+        <select name="adjustment_direction">
+            <option value="INCREASE">Increase</option>
+            <option value="DECREASE">Decrease</option>
+        </select>
+    </div>
+
+    <label>From Store ID (for transfer)</label>
+    <input type="text" name="from_store_id">
+
+    <label>To Store ID (for transfer)</label>
+    <input type="text" name="to_store_id">
+
+    <label>Quantity (whole units)</label>
+    <input type="number"
+           name="quantity"
+           min="1"
+           step="1"
+           placeholder="Enter 1, 2, 3..."
+           required>
+    <small>Enter a positive whole number. Decimal quantities such as 0.01 are not accepted.</small>
+
+    <label>Reason</label>
+    <input type="text" name="reason">
+
+    <label>Movement Date</label>
+    <input type="datetime-local" name="movement_date" required>
+
+    <button type="submit">Save Movement</button>
+
+</form>
+
+<h2>Movement History</h2>
+
+<table>
+    <tr>
+        <th>Movement ID</th>
+        <th>Store</th>
+        <th>Product</th>
+        <th>Type</th>
+        <th>Quantity</th>
+        <th>Date</th>
+    </tr>
+
+    {% for movement in movements %}
+    <tr>
+        <td>{{ movement.movement_id }}</td>
+        <td>{{ movement.store_name }}</td>
+        <td>{{ movement.product_name }}</td>
+        <td>{{ movement.movement_type }}</td>
+        <td>{{ movement.quantity }}</td>
+        <td>{{ movement.movement_date }}</td>
+    </tr>
+    {% else %}
+    <tr>
+        <td colspan="6">No movements found.</td>
+    </tr>
+    {% endfor %}
+</table>
+
+{% endblock %}

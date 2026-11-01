@@ -1,0 +1,214 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<h2>Customer Sales and Billing</h2>
+
+<form method="POST" id="sales-form">
+
+    <h3>Store Details</h3>
+
+    <label>Select Store</label>
+    <select name="store_id" required>
+        <option value="">-- Select Store --</option>
+        {% for store in stores %}
+        <option value="{{ store.store_id }}">
+            {{ store.store_name }}
+        </option>
+        {% endfor %}
+    </select>
+
+    <h3>Customer Details</h3>
+
+    <label>Customer Name (optional for walk-in customers)</label>
+    <input type="text" name="customer_name" maxlength="100">
+
+    <label>Phone Number</label>
+    <input type="text" name="phone" maxlength="15">
+
+    <label>Email</label>
+    <input type="email" name="email" maxlength="100">
+
+    <h3>Products</h3>
+
+    <div id="product-rows">
+
+        <div class="product-row">
+            <label>Product</label>
+
+            <select name="sku_id" class="product-select" required>
+                <option value="">-- Select Product --</option>
+                {% for product in products %}
+                <option value="{{ product.sku_id }}"
+                        data-price="{{ product.unit_price }}">
+                    {{ product.product_name }} -
+                    ₹{{ product.unit_price }}
+                </option>
+                {% endfor %}
+            </select>
+
+            <label>Quantity</label>
+            <input type="number"
+                   name="quantity"
+                   class="quantity-input"
+                   min="1"
+                   step="1"
+                   value="1"
+                   required>
+
+            <button type="button" class="remove-product">
+                Remove from Bill
+            </button>
+
+            <hr>
+        </div>
+
+    </div>
+
+    <button type="button" id="add-product">
+        + Add Another Product
+    </button>
+
+    <h3>Bill Summary</h3>
+
+    <p>
+        Total Amount:
+        <strong id="total-amount">₹0.00</strong>
+    </p>
+
+    <button type="submit">Complete Sale</button>
+
+</form>
+
+
+<template id="product-row-template">
+    <div class="product-row">
+
+        <label>Product</label>
+
+        <select name="sku_id" class="product-select" required>
+            <option value="">-- Select Product --</option>
+            {% for product in products %}
+            <option value="{{ product.sku_id }}"
+                    data-price="{{ product.unit_price }}">
+                {{ product.product_name }} -
+                ₹{{ product.unit_price }}
+            </option>
+            {% endfor %}
+        </select>
+
+        <label>Quantity</label>
+        <input type="number"
+               name="quantity"
+               class="quantity-input"
+               min="1"
+               step="1"
+               value="1"
+               required>
+
+        <button type="button" class="remove-product">
+            Remove Product
+        </button>
+
+        <hr>
+    </div>
+</template>
+
+
+<h2>Recent Customer Sales</h2>
+
+<table>
+    <thead>
+        <tr>
+            <th>Bill ID</th>
+            <th>Customer</th>
+            <th>Store</th>
+            <th>Date</th>
+            <th>Total Amount</th>
+            <th>Status</th>
+        </tr>
+    </thead>
+
+    <tbody>
+        {% for sale in sales_list %}
+        <tr>
+            <td>{{ sale.sale_id }}</td>
+            <td>{{ sale.customer_name }}</td>
+            <td>{{ sale.store_name }}</td>
+            <td>{{ sale.sale_date }}</td>
+            <td>₹{{ sale.total_amount }}</td>
+            <td>{{ sale.status }}</td>
+        </tr>
+        {% else %}
+        <tr>
+            <td colspan="6">No customer sales found.</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+
+<script>
+    const productRows = document.getElementById("product-rows");
+    const addProductButton = document.getElementById("add-product");
+    const template = document.getElementById("product-row-template");
+    const totalAmount = document.getElementById("total-amount");
+
+    function calculateTotal() {
+        let total = 0;
+
+        document.querySelectorAll(".product-row").forEach(row => {
+            const select = row.querySelector(".product-select");
+            const quantityInput = row.querySelector(".quantity-input");
+
+            const selectedOption = select.options[select.selectedIndex];
+            const price = Number(selectedOption?.dataset.price || 0);
+            const quantity = Number(quantityInput.value || 0);
+
+            if (quantity > 0) {
+                total += price * quantity;
+            }
+        });
+
+        totalAmount.textContent =
+            "₹" + total.toFixed(2);
+    }
+
+    addProductButton.addEventListener("click", function () {
+        const newRow = template.content.cloneNode(true);
+        productRows.appendChild(newRow);
+        calculateTotal();
+    });
+
+    productRows.addEventListener("change", calculateTotal);
+    productRows.addEventListener("input", calculateTotal);
+
+    productRows.addEventListener("click", function (event) {
+        if (event.target.classList.contains("remove-product")) {
+            const rows = productRows.querySelectorAll(".product-row");
+
+            if (rows.length > 1) {
+                event.target.closest(".product-row").remove();
+                calculateTotal();
+            } else {
+                alert("At least one product is required.");
+            }
+        }
+    });
+
+    document.getElementById("sales-form").addEventListener(
+        "submit",
+        function (event) {
+            const rows = productRows.querySelectorAll(".product-row");
+
+            if (rows.length === 0) {
+                event.preventDefault();
+                alert("Please add at least one product.");
+            }
+        }
+    );
+
+    calculateTotal();
+</script>
+
+{% endblock %}

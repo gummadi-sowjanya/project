@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - Inventory Loss Detection</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+<main class="login-container">
+    <h1>Inventory Loss Detection System</h1>
+    <h2>Login</h2>
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% for category, message in messages %}<div class="message {{ category }}">{{ message }}</div>{% endfor %}
+    {% endwith %}
+    <form method="POST" action="{{ url_for('auth_bp.login') }}">
+        <label>Username</label><input type="text" name="username" autocomplete="username" required>
+        <label>Password</label><input type="password" name="password" autocomplete="current-password" required>
+        <button type="submit">Login</button>
+    </form>
+</main>
+</body>
+</html>

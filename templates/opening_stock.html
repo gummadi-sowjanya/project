@@ -1,0 +1,93 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<h2>Opening Stock Management</h2>
+
+<p>
+    Configure the initial quantity for a product at a store before recording
+    sales or other inventory movements.
+</p>
+
+<div class="message">
+    Opening stock can be configured only once for each store/product pair.
+    To change stock after movements have been recorded, use an inventory
+    adjustment from the Movements page.
+</div>
+
+<h3>Configure Opening Stock</h3>
+
+<form method="POST">
+    <label for="store_id">Store</label>
+    <select name="store_id" id="store_id" required>
+        <option value="">-- Select Store --</option>
+        {% for store in stores %}
+        <option value="{{ store.store_id }}">{{ store.store_name }}</option>
+        {% endfor %}
+    </select>
+
+    <label for="sku_id">Product</label>
+    <select name="sku_id" id="sku_id" required>
+        <option value="">-- Select Product --</option>
+        {% for product in products %}
+        <option value="{{ product.sku_id }}">
+            {{ product.product_name }} ({{ product.sku_id }})
+        </option>
+        {% endfor %}
+    </select>
+
+    <label for="opening_quantity">Opening Quantity</label>
+    <input
+        type="number"
+        name="opening_quantity"
+        id="opening_quantity"
+        min="0"
+        step="1"
+        required
+    >
+
+    <button type="submit">Save Opening Stock</button>
+</form>
+
+<h3>Store/Product Opening Stock</h3>
+
+<table>
+    <thead>
+        <tr>
+            <th>Store</th>
+            <th>Product</th>
+            <th>SKU ID</th>
+            <th>Opening Quantity</th>
+            <th>Status</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for row in stock_rows %}
+        <tr>
+            <td>{{ row.store_name }}</td>
+            <td>{{ row.product_name }}</td>
+            <td>{{ row.sku_id }}</td>
+            <td>
+                {% if row.opening_quantity is not none %}
+                    {{ row.opening_quantity }}
+                {% else %}
+                    —
+                {% endif %}
+            </td>
+            <td>
+                {% if row.opening_quantity is not none %}
+                    Configured
+                {% else %}
+                    Not configured
+                {% endif %}
+            </td>
+        </tr>
+        {% else %}
+        <tr>
+            <td colspan="5">No active stores or products found.</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+{% endblock %}

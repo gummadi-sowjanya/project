@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<h2>Shrinkage Alerts</h2>
+
+<p>Shortage alerts are generated automatically after a cycle count is saved. You can also run detection manually for older pending counts.</p>
+
+<form method="POST"
+      action="{{ url_for('alert_bp.run_detection') }}">
+
+    <button type="submit">
+        Run Shrinkage Detection
+    </button>
+
+</form>
+
+<table>
+    <tr>
+        <th>Alert ID</th>
+        <th>Store</th>
+        <th>Product</th>
+        <th>Expected</th>
+        <th>Actual</th>
+        <th>Loss</th>
+        <th>Risk Score</th>
+        <th>Issue Type</th>
+        <th>Status</th>
+    </tr>
+
+    {% for alert in alerts %}
+    <tr>
+        <td>{{ alert.alert_id }}</td>
+        <td>{{ alert.store_name }}</td>
+        <td>{{ alert.product_name }}</td>
+        <td>{{ alert.expected_quantity }}</td>
+        <td>{{ alert.actual_quantity }}</td>
+        <td>{{ alert.loss_quantity }}</td>
+        <td>{{ alert.risk_score }}</td>
+        <td>{{ alert.issue_type }}</td>
+        <td>{{ alert.status }}</td>
+    </tr>
+    {% else %}
+    <tr>
+        <td colspan="9">No alerts found.</td>
+    </tr>
+    {% endfor %}
+</table>
+
+{% endblock %}

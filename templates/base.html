@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Inventory Loss Detection</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+<header>
+    <h1>Inventory Loss Detection System</h1>
+    {% if logged_in %}
+    <div class="user-info">Logged in: {{ current_username }} ({{ current_role }})</div>
+    <nav>
+        <a href="{{ url_for('dashboard') }}">Dashboard</a>
+        <a href="{{ url_for('store_bp.stores') }}">Stores</a>
+        <a href="{{ url_for('sku_bp.products') }}">Products</a>
+        {% if current_role in ['OWNER', 'MANAGER'] %}
+        <a href="{{ url_for('employee_bp.employees') }}">Employees</a>
+        {% endif %}
+        <a href="{{ url_for('inventory_bp.movements') }}">Movements</a>
+        {% if current_role in ['OWNER', 'MANAGER'] %}
+        <a href="{{ url_for('inventory_bp.opening_stock') }}">Opening Stock</a>
+        {% endif %}
+        <a href="{{ url_for('sales_bp.sales') }}">Customer Sales</a>
+        <a href="{{ url_for('returns_bp.returns') }}">Returns & Exchanges</a>
+        <a href="{{ url_for('inventory_bp.cycle_counts') }}">Cycle Counts</a>
+        {% if current_role in ['OWNER', 'MANAGER'] %}
+        <a href="{{ url_for('alert_bp.alerts') }}">Alerts</a>
+        <a href="{{ url_for('investigation_bp.investigations') }}">Investigations</a>
+        {% endif %}
+        {% if current_role == 'OWNER' %}
+        <a href="{{ url_for('account_bp.accounts') }}">Manage Accounts</a>
+        {% endif %}
+        <form method="POST" action="{{ url_for('auth_bp.logout') }}" class="logout-form">
+            <button type="submit">Logout</button>
+        </form>
+    </nav>
+    {% endif %}
+</header>
+<main>
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}{% for category, message in messages %}
+        <div class="message {{ category }}">{{ message }}</div>
+      {% endfor %}{% endif %}
+    {% endwith %}
+    {% block content %}{% endblock %}
+</main>
+<script src="{{ url_for('static', filename='js/script.js') }}"></script>
+</body>
+</html>

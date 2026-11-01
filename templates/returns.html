@@ -1,0 +1,204 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<h2>Returns & Exchanges</h2>
+
+<p>
+    Search for the original customer sale to exchange a product.
+</p>
+
+<hr>
+
+<h3>Search Original Sale</h3>
+
+<form method="GET" action="{{ url_for('returns_bp.returns') }}">
+    <label>Original Sale ID:</label>
+
+    <input
+        type="text"
+        name="sale_id"
+        value="{{ sale_id }}"
+        placeholder="Enter SALE ID"
+        required
+    >
+
+    <button type="submit">Search Sale</button>
+</form>
+
+{% if sale_id %}
+
+    <hr>
+
+    <h3>Products in Sale: {{ sale_id }}</h3>
+
+    {% if sale_items %}
+
+        {% for item in sale_items %}
+
+            <div class="card">
+
+                <h4>{{ item.product_name }}</h4>
+
+                <p>Product ID: {{ item.sku_id }}</p>
+
+                <p>Original Quantity: {{ item.sold_quantity }}</p>
+
+                <p>Already Returned: {{ item.returned_quantity }}</p>
+
+                <p>
+                    <strong>
+                        Available Return Quantity:
+                        {{ item.available_quantity }}
+                    </strong>
+                </p>
+
+                <p>Original Selling Price: ₹{{ item.selling_price }}</p>
+
+                {% if item.available_quantity > 0 %}
+
+                    <form method="POST"
+                          action="{{ url_for('returns_bp.returns') }}">
+
+                        <input
+                            type="hidden"
+                            name="sale_id"
+                            value="{{ item.sale_id }}"
+                        >
+
+                        <input
+                            type="hidden"
+                            name="original_sale_movement_id"
+                            value="{{ item.original_sale_movement_id }}"
+                        >
+
+                        <label>Return Quantity:</label>
+
+                        <input
+                            type="number"
+                            name="return_quantity"
+                            min="1"
+                            max="{{ item.available_quantity }}"
+                            value="1"
+                            required
+                        >
+
+                        <label>Return Reason:</label>
+
+                        <select name="return_reason" required>
+                            <option value="">Select Reason</option>
+                            <option value="DEFECTIVE">Defective</option>
+                            <option value="CUSTOMER_CHANGED_MIND">
+                                Customer Changed Mind
+                            </option>
+                            <option value="WRONG_PRODUCT">Wrong Product</option>
+                            <option value="OTHER">Other</option>
+                        </select>
+
+                        <label>Returned Product Condition:</label>
+
+                        <select name="return_condition" required>
+                            <option value="">Select Condition</option>
+                            <option value="SELLABLE">Sellable</option>
+                            <option value="DAMAGED">Damaged</option>
+                        </select>
+
+                        <label>Replacement Product:</label>
+
+                        <select name="replacement_sku_id" required>
+                            <option value="">Select Replacement Product</option>
+
+                            {% for product in products %}
+                                <option value="{{ product.sku_id }}">
+                                    {{ product.product_name }}
+                                    - ₹{{ product.unit_price }}
+                                </option>
+                            {% endfor %}
+
+                        </select>
+
+                        <p>
+                            Note: Replacement product must have the
+                            same selling price as the returned product.
+                        </p>
+
+                        <button type="submit">
+                            Complete Exchange
+                        </button>
+
+                    </form>
+
+                {% else %}
+
+                    <p>All purchased units have already been returned.</p>
+
+                {% endif %}
+
+            </div>
+
+            <hr>
+
+        {% endfor %}
+
+    {% else %}
+
+        <p>No completed sale found with this Sale ID.</p>
+
+    {% endif %}
+
+{% endif %}
+
+
+{% if current_role in ['OWNER', 'MANAGER'] %}
+
+    <hr>
+
+    <h3>Exchange History</h3>
+
+    {% if exchange_history %}
+
+        <table border="1" cellpadding="8" cellspacing="0">
+
+            <thead>
+                <tr>
+                    <th>Return ID</th>
+                    <th>Date</th>
+                    <th>Store</th>
+                    <th>Product</th>
+                    <th>Quantity</th>
+                    <th>Reason</th>
+                    <th>Condition</th>
+                    <th>New Sale ID</th>
+                </tr>
+            </thead>
+
+            <tbody>
+
+                {% for exchange in exchange_history %}
+
+                    <tr>
+                        <td>{{ exchange.return_id }}</td>
+                        <td>{{ exchange.return_date }}</td>
+                        <td>{{ exchange.store_name }}</td>
+                        <td>{{ exchange.product_name }}</td>
+                        <td>{{ exchange.return_quantity }}</td>
+                        <td>{{ exchange.return_reason }}</td>
+                        <td>{{ exchange.return_condition }}</td>
+                        <td>{{ exchange.exchange_sale_id }}</td>
+                    </tr>
+
+                {% endfor %}
+
+            </tbody>
+
+        </table>
+
+    {% else %}
+
+        <p>No exchange records available.</p>
+
+    {% endif %}
+
+{% endif %}
+
+{% endblock %}

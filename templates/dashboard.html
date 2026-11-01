@@ -1,0 +1,65 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<h2>Dashboard</h2>
+
+<div class="dashboard-cards">
+
+    <div class="card">
+        <h3>Total Stores</h3>
+        <p>{{ stores }}</p>
+    </div>
+
+    <div class="card">
+        <h3>Total Products</h3>
+        <p>{{ products }}</p>
+    </div>
+
+    <div class="card">
+        <h3>Total Movements</h3>
+        <p>{{ movements }}</p>
+    </div>
+
+    {% if current_role in ["OWNER", "MANAGER"] %}
+    <div class="card"><h3>Open Alerts</h3><p>{{ alerts }}</p></div>
+    <div class="card"><h3>Open Alert Loss Quantity</h3><p>{{ loss }}</p></div>
+    {% endif %}
+
+</div>
+
+{% if current_role in ["OWNER", "MANAGER"] %}
+<h2>Recent Inventory Alerts</h2>
+
+<table>
+    <thead>
+        <tr>
+            <th>Alert ID</th>
+            <th>Store</th>
+            <th>Product</th>
+            <th>Loss Quantity</th>
+            <th>Risk Score</th>
+            <th>Status</th>
+        </tr>
+    </thead>
+
+    <tbody>
+        {% for alert in recent_alerts %}
+        <tr>
+            <td>{{ alert.alert_id }}</td>
+            <td>{{ alert.store_name }}</td>
+            <td>{{ alert.product_name }}</td>
+            <td>{{ alert.loss_quantity }}</td>
+            <td>{{ alert.risk_score }}</td>
+            <td>{{ alert.status }}</td>
+        </tr>
+        {% else %}
+        <tr>
+            <td colspan="6">No alerts available.</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endif %}
+
+{% endblock %}

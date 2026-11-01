@@ -1,0 +1,21 @@
+# Virtual environments
+myenv/
+venv/
+.venv/
+
+# Python cache
+__pycache__/
+*.py[cod]
+
+# Secrets and local environment
+.env
+
+# Local databases / generated files (uncomment if these should not be versioned)
+# *.sqlite3
+# *.db
+
+# IDE / OS
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db

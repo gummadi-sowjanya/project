@@ -1,0 +1,86 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<h2>Investigation Management</h2>
+
+<h3>Create Investigation</h3>
+
+<form method="POST">
+
+    <label>Select Alert</label>
+
+    <select name="alert_id" required>
+        {% for alert in alerts %}
+        <option value="{{ alert.alert_id }}">
+            {{ alert.alert_id }}
+        </option>
+        {% endfor %}
+    </select>
+
+    <label>Assign Employee</label>
+
+<select name="assigned_employee_id">
+    <option value="">Not Assigned</option>
+
+    {% for employee in employees %}
+    <option value="{{ employee.employee_role_id }}">
+        {{ employee.employee_name }}
+    </option>
+    {% endfor %}
+</select>
+
+<label>Investigation Notes</label>
+<textarea name="notes" required></textarea>
+
+    <button type="submit">Create Investigation</button>
+
+</form>
+
+<h2>Investigation List</h2>
+
+{% for investigation in investigations %}
+
+<div class="investigation-card">
+
+    <h3>{{ investigation.investigation_id }}</h3>
+
+    <p><strong>Alert:</strong> {{ investigation.alert_id }}</p>
+    <p><strong>Loss:</strong> {{ investigation.loss_quantity }}</p>
+    <p><strong>Risk Score:</strong> {{ investigation.risk_score }}</p>
+    <p><strong>Notes:</strong> {{ investigation.investigation_notes }}</p>
+    <p><strong>Status:</strong> {{ investigation.status }}</p>
+
+    <form method="POST"
+          action="{{ url_for(
+              'investigation_bp.update_investigation',
+              investigation_id=investigation.investigation_id
+          ) }}">
+
+        <label>Finding</label>
+
+        <select name="finding" required>
+            <option value="UNRESOLVED">Unresolved</option>
+            <option value="THEFT_SUSPECTED">Theft Suspected</option>
+            <option value="DATA_ENTRY_ERROR">Data Entry Error</option>
+            <option value="LEGITIMATE_DAMAGE">Legitimate Damage</option>
+            <option value="RETURN_MISMATCH">Return Mismatch</option>
+            <option value="TRANSFER_ERROR">Transfer Error</option>
+        </select>
+
+        <label>Resolution Details</label>
+        <textarea name="resolution" required></textarea>
+
+        <button type="submit">Update Investigation</button>
+
+    </form>
+
+</div>
+
+{% else %}
+
+<p>No investigations found.</p>
+
+{% endfor %}
+
+{% endblock %}

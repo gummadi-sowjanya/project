@@ -1,0 +1,71 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<h2>Physical Stock Counting</h2>
+
+<form method="POST">
+
+    <label>Store</label>
+    <select name="store_id" required>
+        {% for store in stores %}
+        <option value="{{ store.store_id }}">
+            {{ store.store_name }}
+        </option>
+        {% endfor %}
+    </select>
+
+    <label>Product</label>
+    <select name="sku_id" required>
+        {% for product in products %}
+        <option value="{{ product.sku_id }}">
+            {{ product.product_name }}
+        </option>
+        {% endfor %}
+    </select>
+
+    <label>Physical Quantity</label>
+    <input type="number"
+           name="physical_quantity"
+           min="0"
+           step="1"
+           required>
+
+    <label>Count Date</label>
+    <input type="datetime-local" name="count_date" required>
+
+    <button type="submit">Save Cycle Count</button>
+
+</form>
+
+<h2>Cycle Count History</h2>
+
+<table>
+    <tr>
+        <th>Count ID</th>
+        <th>Store</th>
+        <th>Product</th>
+        <th>System Quantity</th>
+        <th>Physical Quantity</th>
+        <th>Variance</th>
+        <th>Status</th>
+    </tr>
+
+    {% for count in counts %}
+    <tr>
+        <td>{{ count.count_id }}</td>
+        <td>{{ count.store_name }}</td>
+        <td>{{ count.product_name }}</td>
+        <td>{{ count.system_quantity }}</td>
+        <td>{{ count.physical_quantity }}</td>
+        <td>{{ count.variance }}</td>
+        <td>{{ count.status }}</td>
+    </tr>
+    {% else %}
+    <tr>
+        <td colspan="7">No cycle counts found.</td>
+    </tr>
+    {% endfor %}
+</table>
+
+{% endblock %}

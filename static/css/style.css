@@ -1,0 +1,173 @@
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background: #f4f6f9;
+    color: #222;
+}
+
+header {
+    background: #1f3b5b;
+    color: white;
+    padding: 20px;
+}
+
+header h1 {
+    margin: 0 0 15px;
+}
+
+nav {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+}
+
+nav a {
+    color: white;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+nav a:hover {
+    text-decoration: underline;
+}
+
+main {
+    padding: 25px;
+}
+
+h2 {
+    color: #1f3b5b;
+    margin-top: 25px;
+}
+
+form {
+    background: white;
+    padding: 20px;
+    margin: 15px 0 25px;
+    border-radius: 8px;
+    max-width: 650px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+label {
+    display: block;
+    margin-top: 12px;
+    font-weight: bold;
+}
+
+input,
+select,
+textarea {
+    width: 100%;
+    padding: 10px;
+    margin-top: 6px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+textarea {
+    min-height: 80px;
+}
+
+button {
+    margin-top: 18px;
+    padding: 11px 18px;
+    background: #1f6feb;
+    border: none;
+    color: white;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+button:hover {
+    background: #164fa8;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    background: white;
+    margin-top: 15px;
+}
+
+th,
+td {
+    border: 1px solid #ddd;
+    padding: 10px;
+    text-align: left;
+}
+
+th {
+    background: #1f3b5b;
+    color: white;
+}
+
+tr:nth-child(even) {
+    background: #f1f4f8;
+}
+
+.dashboard-cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+    gap: 15px;
+}
+
+.card {
+    background: white;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+.card h3 {
+    color: #555;
+}
+
+.card p {
+    font-size: 28px;
+    font-weight: bold;
+    color: #1f6feb;
+}
+
+.message {
+    padding: 12px;
+    margin-bottom: 12px;
+    border-radius: 5px;
+}
+
+.success {
+    background: #d8f5df;
+    color: #155724;
+}
+
+.error {
+    background: #f8d7da;
+    color: #721c24;
+}
+
+.investigation-card {
+    background: white;
+    padding: 20px;
+    margin: 20px 0;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+@media (max-width: 700px) {
+    main {
+        padding: 12px;
+    }
+
+    table {
+        display: block;
+        overflow-x: auto;
+    }
+
+    nav {
+        flex-direction: column;
+    }
+}

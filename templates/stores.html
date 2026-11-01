@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<h2>Store Management</h2>
+
+{% if current_role == "OWNER" %}
+<form method="POST">
+
+    <label>Store Name</label>
+    <input type="text" name="store_name" required>
+
+    <label>Location</label>
+    <input type="text" name="location" required>
+
+    <label>Store Type</label>
+    <select name="store_type">
+        <option value="RETAIL">Retail</option>
+        <option value="WAREHOUSE">Warehouse</option>
+    </select>
+
+    <button type="submit">Add Store</button>
+
+</form>
+{% endif %}
+
+<h2>Store List</h2>
+
+<table>
+    <tr>
+        <th>Store ID</th>
+        <th>Store Name</th>
+        <th>Location</th>
+        <th>Type</th>
+        <th>Status</th>
+    </tr>
+
+    {% for store in stores %}
+    <tr>
+        <td>{{ store.store_id }}</td>
+        <td>{{ store.store_name }}</td>
+        <td>{{ store.location }}</td>
+        <td>{{ store.store_type }}</td>
+        <td>{{ store.status }}</td>
+    </tr>
+    {% else %}
+    <tr>
+        <td colspan="5">No stores found.</td>
+    </tr>
+    {% endfor %}
+</table>
+
+{% endblock %}

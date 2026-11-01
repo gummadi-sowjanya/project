@@ -1,0 +1,133 @@
+```html
+{% extends "base.html" %}
+
+{% block content %}
+
+<h2>Manage User Accounts</h2>
+
+<h3>Create Manager or Employee Login</h3>
+
+<form method="POST">
+    <label>Employee Profile</label>
+    <select name="employee_role_id" required>
+        <option value="">Select employee</option>
+        {% for employee in employees %}
+        <option value="{{ employee.employee_role_id }}">
+            {{ employee.employee_name }} ({{ employee.employee_code }})
+        </option>
+        {% endfor %}
+    </select>
+
+    <label>Username</label>
+    <input type="text" name="username" required>
+
+    <label>Password (minimum 8 characters)</label>
+    <input type="password" name="password" minlength="8" required>
+
+    <label>Account Role</label>
+    <select name="account_role" required>
+        <option value="EMPLOYEE">Employee</option>
+        <option value="MANAGER">Manager</option>
+    </select>
+
+    <button type="submit">Create Account</button>
+</form>
+
+<hr>
+
+<h3>Existing Accounts</h3>
+
+<table>
+    <tr>
+        <th>Username</th>
+        <th>Employee</th>
+        <th>Account Role</th>
+        <th>Status</th>
+        <th>Action</th>
+    </tr>
+
+    {% for account in accounts %}
+    <tr>
+        <td>{{ account.username }}</td>
+
+        <td>
+            {% if account.account_role == 'OWNER' %}
+                Owner account
+            {% else %}
+                {{ account.employee_name or 'N/A' }}
+            {% endif %}
+        </td>
+
+        <td>{{ account.account_role }}</td>
+
+        <td>{{ account.status }}</td>
+
+        <td>
+            {% if account.account_role != 'OWNER' %}
+                <form method="POST"
+                      action="{{ url_for('account_bp.update_account_status', user_id=account.user_id) }}">
+
+                    {% if account.status == 'ACTIVE' %}
+                        <input type="hidden" name="status" value="INACTIVE">
+                        <button type="submit">Deactivate</button>
+                    {% else %}
+                        <input type="hidden" name="status" value="ACTIVE">
+                        <button type="submit">Activate</button>
+                    {% endif %}
+
+                </form>
+            {% else %}
+                Protected
+            {% endif %}
+        </td>
+    </tr>
+
+    {% else %}
+    <tr>
+        <td colspan="5">No accounts found.</td>
+    </tr>
+    {% endfor %}
+</table>
+
+<hr>
+
+<h3>Transfer Ownership</h3>
+
+<p>
+    Select an active Manager or Employee account
+    to transfer ownership.
+</p>
+
+<form method="POST"
+      action="{{ url_for('account_bp.transfer_owner') }}"
+      onsubmit="return confirm('Are you sure? Your current Owner account will become inactive and you will be logged out.');">
+
+    <label>New Owner Account</label>
+
+    <select name="new_owner_id" required>
+        <option value="">Select Account</option>
+
+        {% for candidate in transfer_candidates %}
+        <option value="{{ candidate.user_id }}">
+            {{ candidate.username }} ({{ candidate.account_role }})
+        </option>
+        {% endfor %}
+
+    </select>
+
+    <br><br>
+
+    <label>Current Owner Password</label>
+
+    <input type="password"
+           name="current_password"
+           required
+           autocomplete="current-password">
+
+    <br><br>
+
+    <button type="submit">Transfer Ownership</button>
+
+</form>
+
+{% endblock %}
